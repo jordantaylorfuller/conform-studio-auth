@@ -31,17 +31,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #1a1a1a;
+            background-color: #000000;
             color: #ffffff;
             text-align: center;
         }
         
         .container {
-            background-color: #2d2d2d;
-            border-radius: 12px;
-            padding: 60px 40px;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 48px 56px;
+            max-width: 600px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .logo {
@@ -56,24 +57,25 @@
         }
         
         h1 {
-            color: #f61cb1;
+            color: #ffffff;
             font-size: 28px;
-            font-weight: 600;
-            margin: 20px 0;
+            font-weight: 500;
+            margin: 24px 0 16px 0;
+            letter-spacing: -0.02em;
         }
         
         h2 {
             color: #ffffff;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 12px;
         }
         
         p {
-            color: #cccccc;
-            margin: 20px 0;
-            font-size: 16px;
-            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.6;
         }
         
         .button {
@@ -146,9 +148,9 @@
         }
         
         .small-text {
-            font-size: 14px;
-            color: #888888;
-            margin-top: 30px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 24px;
         }
         
         .hidden {
@@ -170,11 +172,11 @@
         
         <!-- Success state -->
         <div id="success-state" class="hidden">
-            <h1>Authentication Successful!</h1>
-            <p>You have been successfully authenticated.</p>
-            <p>Redirecting you back to Conform Studio...</p>
-            <a id="manual-return" href="#" class="button">Open Conform Studio</a>
-            <p class="small-text">If the app doesn't open automatically, click the button above.</p>
+            <h1>Authentication Successful</h1>
+            <p>You have successfully signed in to Conform Studio.</p>
+            <p style="margin-top: 20px;">You can now close this window and return to the application.</p>
+            <p class="small-text" style="margin-top: 32px;">The application will detect your authentication automatically.</p>
+            <a id="manual-return" href="#" class="button hidden" style="margin-top: 30px;">Open Conform Studio</a>
         </div>
         
         <!-- Error state -->
@@ -229,6 +231,10 @@
         function handleSuccess(authCode) {
             const deepLink = `${DEEP_LINK_SCHEME}auth-callback?code=${encodeURIComponent(authCode)}`;
             
+            // Log for debugging
+            console.log('Authentication successful, code:', authCode);
+            console.log('Deep link URL:', deepLink);
+            
             // Set up manual return button
             manualReturnButton.href = deepLink;
             
@@ -240,11 +246,13 @@
             
             // Attempt to open the desktop app
             setTimeout(() => {
+                console.log('Attempting to open deep link...');
                 window.location.href = deepLink;
             }, REDIRECT_DELAY + 500);
             
             // Show manual button if auto-redirect might have failed
             setTimeout(() => {
+                console.log('Showing manual button as fallback');
                 manualReturnButton.style.display = 'inline-block';
             }, FALLBACK_DELAY);
         }
