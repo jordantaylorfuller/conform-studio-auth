@@ -39,10 +39,14 @@
         }
         
         .logo {
-            color: #f61cb1;
-            font-size: 32px;
-            font-weight: bold;
+            width: 200px;
+            height: auto;
             margin: 10px 0 30px 0;
+        }
+        
+        .logo svg {
+            width: 100%;
+            height: auto;
         }
         
         h1 {
@@ -149,7 +153,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">CONFORM STUDIO</div>
+        <img src="ConformStudio2Line.svg" alt="Conform Studio" class="logo" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin', '<h1 style=\'color: #f61cb1; font-size: 32px; font-weight: bold; margin: 10px 0 30px 0;\'>CONFORM STUDIO</h1>');" />
         
         <!-- Loading state -->
         <div id="loading-state">
