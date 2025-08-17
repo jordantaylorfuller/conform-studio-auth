@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Conform Studio - Authentication</title>
     <meta name="description" content="Completing authentication for Conform Studio">
-    <meta name="robots" content="noindex, nofollow">
     
     <!-- Prevent caching -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -20,62 +19,61 @@
             box-sizing: border-box;
         }
         
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #000000;
+            min-height: 100vh;
+            background: #1a1a1a;
             color: #ffffff;
-            text-align: center;
+            line-height: 1.6;
         }
         
         .container {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 48px 56px;
-            max-width: 600px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            padding: 60px 40px;
+            background: #2d2d2d;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+            margin: 20px;
         }
         
         .logo {
             width: 200px;
             height: auto;
-            margin: 10px 0 30px 0;
+            margin-bottom: 30px;
         }
         
-        .logo svg {
-            width: 100%;
-            height: auto;
+        /* Text logo fallback */
+        .text-logo {
+            color: #f61cb1;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
         }
         
         h1 {
-            color: #ffffff;
+            color: #f61cb1;
             font-size: 28px;
-            font-weight: 500;
-            margin: 24px 0 16px 0;
-            letter-spacing: -0.02em;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
         
         h2 {
             color: #ffffff;
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 12px;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
         }
         
         p {
-            color: rgba(255, 255, 255, 0.7);
-            margin: 12px 0;
-            font-size: 15px;
-            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 20px;
+            font-size: 16px;
         }
         
         .button {
@@ -148,20 +146,41 @@
         }
         
         .small-text {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 24px;
+            font-size: 14px;
+            color: #888888;
+            margin-top: 30px;
         }
         
         .hidden {
             display: none !important;
         }
         
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .button {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .secondary-button {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="ConformStudio2Line.svg" alt="Conform Studio" class="logo" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin', '<h1 style=\'color: #f61cb1; font-size: 32px; font-weight: bold; margin: 10px 0 30px 0;\'>CONFORM STUDIO</h1>');" />
+        <!-- Logo - you can replace this with an actual image -->
+        <div class="text-logo">CONFORM STUDIO</div>
         
         <!-- Loading state -->
         <div id="loading-state">
@@ -172,11 +191,11 @@
         
         <!-- Success state -->
         <div id="success-state" class="hidden">
-            <h1>Authentication Successful</h1>
-            <p>You have successfully signed in to Conform Studio.</p>
-            <p style="margin-top: 20px;">You can now close this window and return to the application.</p>
-            <p class="small-text" style="margin-top: 32px;">The application will detect your authentication automatically.</p>
-            <a id="manual-return" href="#" class="button hidden" style="margin-top: 30px;">Open Conform Studio</a>
+            <h1>Authentication Successful!</h1>
+            <p id="success-message">You have successfully signed in to Conform Studio.</p>
+            <p>You can now close this window and return to the application.</p>
+            <a id="manual-return" href="#" class="button">Open Conform Studio</a>
+            <p class="small-text">The application will detect your authentication automatically.</p>
         </div>
         
         <!-- Error state -->
@@ -194,21 +213,37 @@
             <h2>Invalid Request</h2>
             <p>No authentication data was received.</p>
             <p>Please try signing in again from Conform Studio.</p>
+            <button onclick="window.close()" class="button">Close Window</button>
         </div>
     </div>
 
     <script>
         // Configuration
         const DEEP_LINK_SCHEME = 'conformstudio://';
-        const REDIRECT_DELAY = 1500;
-        const FALLBACK_DELAY = 3000;
+        const REDIRECT_DELAY = 1500; // milliseconds
+        const FALLBACK_DELAY = 3000; // milliseconds
+        
+        // Parse hash parameters (for Supabase email verification)
+        function getHashParams() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            return params;
+        }
         
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
+        const hashParams = getHashParams();
+        
+        // Check for OAuth code (standard OAuth flow)
         const code = urlParams.get('code');
         const error = urlParams.get('error');
         const errorDescription = urlParams.get('error_description');
-        const state = urlParams.get('state');
+        const state = urlParams.get('state'); // Optional state parameter for CSRF protection
+        
+        // Check for Supabase access token (email verification flow)
+        const accessToken = hashParams.get('access_token');
+        const tokenType = hashParams.get('token_type');
+        const type = hashParams.get('type'); // 'signup' for email verification
         
         // Elements
         const loadingState = document.getElementById('loading-state');
@@ -228,11 +263,14 @@
         
         // Handle successful authentication
         function handleSuccess(authCode) {
-            const deepLink = `${DEEP_LINK_SCHEME}auth-callback?code=${encodeURIComponent(authCode)}`;
-            
-            // Log for debugging
-            console.log('Authentication successful, code:', authCode);
-            console.log('Deep link URL:', deepLink);
+            let deepLink;
+            if (authCode) {
+                // OAuth flow with code
+                deepLink = `${DEEP_LINK_SCHEME}auth-callback?code=${encodeURIComponent(authCode)}`;
+            } else {
+                // Email verification flow
+                deepLink = `${DEEP_LINK_SCHEME}auth-verified`;
+            }
             
             // Set up manual return button
             manualReturnButton.href = deepLink;
@@ -245,13 +283,11 @@
             
             // Attempt to open the desktop app
             setTimeout(() => {
-                console.log('Attempting to open deep link...');
                 window.location.href = deepLink;
             }, REDIRECT_DELAY + 500);
             
             // Show manual button if auto-redirect might have failed
             setTimeout(() => {
-                console.log('Showing manual button as fallback');
                 manualReturnButton.style.display = 'inline-block';
             }, FALLBACK_DELAY);
         }
@@ -279,16 +315,43 @@
         
         // Process the authentication result
         if (error) {
+            // OAuth error
             handleError(error, errorDescription);
         } else if (code) {
+            // OAuth success with code
             handleSuccess(code);
+            
+            // Log success for analytics (optional)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'auth_callback_success', {
+                    'event_category': 'authentication',
+                    'auth_type': 'oauth'
+                });
+            }
+        } else if (accessToken && tokenType) {
+            // Supabase email verification success
+            const successMsg = document.getElementById('success-message');
+            if (type === 'signup') {
+                successMsg.textContent = 'Your email has been verified successfully!';
+            }
+            handleSuccess(null);
+            
+            // Log success for analytics (optional)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'auth_callback_success', {
+                    'event_category': 'authentication',
+                    'auth_type': 'email_verification'
+                });
+            }
         } else {
+            // No authentication data
             handleInvalid();
         }
         
-        // Handle visibility change
+        // Handle visibility change (user switching tabs)
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && code && successState.classList.contains('hidden')) {
+            if (!document.hidden && (code || accessToken) && successState.classList.contains('hidden')) {
+                // User came back to the tab, show success state
                 hideAllStates();
                 successState.classList.remove('hidden');
             }
@@ -300,5 +363,17 @@
             history.go(1);
         };
     </script>
+    
+    <!-- Optional: Add your analytics tracking code here -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'YOUR-GA-ID');
+    </script>
+    -->
 </body>
 </html>
