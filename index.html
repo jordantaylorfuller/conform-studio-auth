@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Conform Studio - Authentication</title>
     <meta name="description" content="Completing authentication for Conform Studio">
+    <meta name="robots" content="noindex, nofollow">
     
     <!-- Prevent caching -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -19,61 +20,52 @@
             box-sizing: border-box;
         }
         
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: #1a1a1a;
+            background-color: #1a1a1a;
             color: #ffffff;
             line-height: 1.6;
         }
         
         .container {
             text-align: center;
-            padding: 60px 40px;
-            background: #2d2d2d;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            max-width: 500px;
-            width: 90%;
-            margin: 20px;
+            background-color: #2d2d2d;
+            border-radius: 16px;
+            padding: 48px 56px;
+            max-width: 600px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .logo {
-            width: 200px;
+            width: 400px;
             height: auto;
-            margin-bottom: 30px;
-        }
-        
-        /* Text logo fallback */
-        .text-logo {
-            color: #f61cb1;
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            letter-spacing: -1px;
+            margin: 10px auto 30px auto;
+            max-width: 100%;
         }
         
         h1 {
-            color: #f61cb1;
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        
-        h2 {
             color: #ffffff;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: 500;
+            margin: 24px 0 16px 0;
+            letter-spacing: -0.02em;
         }
         
         p {
-            color: #cccccc;
-            margin-bottom: 20px;
-            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.6;
         }
         
         .button {
@@ -101,16 +93,29 @@
             transform: translateY(0);
         }
         
-        .secondary-button {
-            background: transparent;
-            color: #f61cb1;
-            border: 2px solid #f61cb1;
-            margin-left: 10px;
+        .small-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 24px;
         }
         
-        .secondary-button:hover {
-            background: #f61cb1;
-            color: #1a1a1a;
+        .hidden {
+            display: none !important;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #f61cb1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .error {
@@ -123,79 +128,48 @@
         
         .error h2 {
             color: #ff6b6b;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
         
         .error p {
             color: #ffaaaa;
         }
         
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            margin: 20px 0;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #f61cb1;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .small-text {
-            font-size: 14px;
-            color: #888888;
-            margin-top: 30px;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 600px) {
-            .container {
-                padding: 40px 20px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .button {
-                display: block;
-                width: 100%;
-                margin: 10px 0;
-            }
-            
-            .secondary-button {
-                margin-left: 0;
-            }
+        /* Fallback text logo when image fails */
+        .text-logo {
+            color: #f61cb1;
+            font-size: 64px;
+            font-weight: bold;
+            margin: 10px 0 30px 0;
+            letter-spacing: 2px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo - you can replace this with an actual image -->
+        <!-- Logo image with fallback -->
+        <img src="ConformStudio2Line.svg" alt="Conform Studio" class="logo" 
+             onerror="this.style.display='none'; document.querySelector('.text-logo').style.display='block';">
+        <!-- Text fallback (hidden by default) -->
         <div class="text-logo">CONFORM STUDIO</div>
         
         <!-- Loading state -->
         <div id="loading-state">
             <div class="spinner"></div>
-            <h2>Completing Authentication...</h2>
-            <p>Please wait while we redirect you back to Conform Studio.</p>
+            <h2 style="color: #f61cb1; font-size: 24px; font-weight: 600; margin: 20px 0;">Completing Authentication...</h2>
+            <p>Please wait while we process your authentication.</p>
         </div>
         
         <!-- Success state -->
         <div id="success-state" class="hidden">
-            <h1>Authentication Successful!</h1>
+            <h1>Authentication Successful</h1>
             <p id="success-message">You have successfully signed in to Conform Studio.</p>
-            <p>You can now close this window and return to the application.</p>
-            <a id="manual-return" href="#" class="button">Open Conform Studio</a>
-            <p class="small-text">The application will detect your authentication automatically.</p>
+            <p style="margin-top: 20px;">You can now close this window and return to the application.</p>
+            <p class="small-text" style="margin-top: 32px;">The application will detect your authentication automatically.</p>
+            <a id="manual-return" href="#" class="button hidden" style="margin-top: 30px;">Open Conform Studio</a>
         </div>
         
         <!-- Error state -->
@@ -205,23 +179,22 @@
                 <p id="error-message">An error occurred during authentication.</p>
             </div>
             <button onclick="window.close()" class="button">Close Window</button>
-            <a href="https://conform.studio" class="button secondary-button">Visit Website</a>
         </div>
         
         <!-- Invalid request state -->
         <div id="invalid-state" class="hidden">
-            <h2>Invalid Request</h2>
+            <h2 style="color: #ffffff; font-size: 24px; font-weight: 500; margin-bottom: 16px;">Invalid Request</h2>
             <p>No authentication data was received.</p>
             <p>Please try signing in again from Conform Studio.</p>
-            <button onclick="window.close()" class="button">Close Window</button>
+            <button onclick="window.close()" class="button" style="margin-top: 30px;">Close Window</button>
         </div>
     </div>
 
     <script>
         // Configuration
         const DEEP_LINK_SCHEME = 'conformstudio://';
-        const REDIRECT_DELAY = 1500; // milliseconds
-        const FALLBACK_DELAY = 3000; // milliseconds
+        const REDIRECT_DELAY = 1500;
+        const FALLBACK_DELAY = 3000;
         
         // Parse hash parameters (for Supabase email verification)
         function getHashParams() {
@@ -238,7 +211,6 @@
         const code = urlParams.get('code');
         const error = urlParams.get('error');
         const errorDescription = urlParams.get('error_description');
-        const state = urlParams.get('state'); // Optional state parameter for CSRF protection
         
         // Check for Supabase access token (email verification flow)
         const accessToken = hashParams.get('access_token');
@@ -251,6 +223,7 @@
         const errorState = document.getElementById('error-state');
         const invalidState = document.getElementById('invalid-state');
         const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
         const manualReturnButton = document.getElementById('manual-return');
         
         // Hide all states
@@ -262,14 +235,20 @@
         }
         
         // Handle successful authentication
-        function handleSuccess(authCode) {
-            let deepLink;
-            if (authCode) {
-                // OAuth flow with code
-                deepLink = `${DEEP_LINK_SCHEME}auth-callback?code=${encodeURIComponent(authCode)}`;
-            } else {
-                // Email verification flow
-                deepLink = `${DEEP_LINK_SCHEME}auth-verified`;
+        function handleSuccess(message = null) {
+            // Customize message based on type
+            if (type === 'signup') {
+                successMessage.textContent = 'Your email has been verified successfully!';
+            } else if (message) {
+                successMessage.textContent = message;
+            }
+            
+            // Create deep link
+            let deepLink = DEEP_LINK_SCHEME;
+            if (code) {
+                deepLink += `auth-callback?code=${encodeURIComponent(code)}`;
+            } else if (accessToken) {
+                deepLink += `auth-verified`;
             }
             
             // Set up manual return button
@@ -281,29 +260,30 @@
                 successState.classList.remove('hidden');
             }, REDIRECT_DELAY);
             
-            // Attempt to open the desktop app
+            // Try to open the desktop app
             setTimeout(() => {
+                console.log('Attempting to open deep link...');
                 window.location.href = deepLink;
             }, REDIRECT_DELAY + 500);
             
             // Show manual button if auto-redirect might have failed
             setTimeout(() => {
+                console.log('Showing manual button as fallback');
                 manualReturnButton.style.display = 'inline-block';
             }, FALLBACK_DELAY);
         }
         
         // Handle authentication error
-        function handleError(error, description) {
+        function handleError(err, description) {
             hideAllStates();
             errorState.classList.remove('hidden');
             
-            // Set error message
             if (description) {
                 errorMessage.textContent = description;
-            } else if (error === 'access_denied') {
+            } else if (err === 'access_denied') {
                 errorMessage.textContent = 'Authentication was cancelled or denied.';
             } else {
-                errorMessage.textContent = `Error: ${error}`;
+                errorMessage.textContent = `Error: ${err}`;
             }
         }
         
@@ -318,31 +298,11 @@
             // OAuth error
             handleError(error, errorDescription);
         } else if (code) {
-            // OAuth success with code
-            handleSuccess(code);
-            
-            // Log success for analytics (optional)
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'auth_callback_success', {
-                    'event_category': 'authentication',
-                    'auth_type': 'oauth'
-                });
-            }
+            // OAuth success
+            handleSuccess('OAuth authentication successful!');
         } else if (accessToken && tokenType) {
             // Supabase email verification success
-            const successMsg = document.getElementById('success-message');
-            if (type === 'signup') {
-                successMsg.textContent = 'Your email has been verified successfully!';
-            }
-            handleSuccess(null);
-            
-            // Log success for analytics (optional)
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'auth_callback_success', {
-                    'event_category': 'authentication',
-                    'auth_type': 'email_verification'
-                });
-            }
+            handleSuccess();
         } else {
             // No authentication data
             handleInvalid();
@@ -356,24 +316,6 @@
                 successState.classList.remove('hidden');
             }
         });
-        
-        // Prevent back button
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.go(1);
-        };
     </script>
-    
-    <!-- Optional: Add your analytics tracking code here -->
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'YOUR-GA-ID');
-    </script>
-    -->
 </body>
 </html>
