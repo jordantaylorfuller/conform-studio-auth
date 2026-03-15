@@ -3,13 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <script>
-        // Redirect 404s to index.html to handle all callback URLs
-        window.location.href = '/?' + window.location.search.substring(1);
-    </script>
+    <title>Conform Studio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; background: #000000; color: #ffffff;
+        }
+        .container { text-align: center; max-width: 320px; width: 90%; }
+        .logo { height: 14px; width: auto; opacity: 0.7; margin-bottom: 48px; }
+        .icon { width: 32px; height: 32px; margin: 0 auto 20px; opacity: 0.5; }
+        .icon svg { width: 100%; height: 100%; }
+        .message { font-size: 13px; color: rgba(255,255,255,0.5); }
+        .detail { font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 8px; }
+        .sub { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 16px; cursor: pointer; background: none; border: none; font-family: inherit; text-decoration: none; display: inline-block; }
+        .sub:hover { color: rgba(255,255,255,0.4); }
+    </style>
 </head>
 <body>
-    <p>Redirecting...</p>
+    <div class="container">
+        <img src="https://cdn.builder.io/api/v1/image/assets%2F25af603265884417b23b761757dff1ec%2F2c25ef9dc2684d0187030022dab8721e?format=webp&width=800" alt="Conform Studio" class="logo" />
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <p class="message">Page not found</p>
+        <p class="detail">This page does not exist.</p>
+        <a href="https://conform.studio" class="sub">Go to conform.studio</a>
+    </div>
 </body>
 </html>
