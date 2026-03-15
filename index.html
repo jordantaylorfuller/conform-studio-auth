@@ -3,220 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Conform Studio - Authentication</title>
-    <meta name="description" content="Completing authentication for Conform Studio">
-    <meta name="robots" content="noindex, nofollow">
-    
-    <!-- Prevent caching -->
+    <title>Conform Studio</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #0a0a0a;
-            color: #ffffff;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; background: #000000; color: #ffffff;
         }
-        
-        .container {
-            text-align: center;
-            background-color: #1a1a1a;
-            border-radius: 16px;
-            padding: 48px 56px;
-            max-width: 600px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .logo {
-            width: 400px;
-            height: auto;
-            margin: 10px auto 30px auto;
-            max-width: 100%;
-        }
-        
-        h1 {
-            color: #ffffff;
-            font-size: 28px;
-            font-weight: 500;
-            margin: 24px 0 16px 0;
-            letter-spacing: -0.02em;
-        }
-        
-        p {
-            color: rgba(255, 255, 255, 0.7);
-            margin: 12px 0;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-        
-        .button {
-            display: inline-block;
-            padding: 14px 32px;
-            margin-top: 20px;
-            background: #f61cb1;
-            color: #1a1a1a;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .button:hover {
-            background: #e61ca1;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(246, 28, 177, 0.3);
-        }
-        
-        .button:active {
-            transform: translateY(0);
-        }
-        
-        .small-text {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 24px;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
+        .container { text-align: center; max-width: 320px; width: 90%; }
+        .logo { height: 14px; width: auto; opacity: 0.7; margin-bottom: 48px; }
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #f61cb1;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            display: inline-block; width: 20px; height: 20px; margin: 0 auto 20px;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-top: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 50%; animation: spin 1s linear infinite;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid #ff6b6b;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .error h2 {
-            color: #ff6b6b;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .error p {
-            color: #ffaaaa;
-        }
-        
-        /* Fallback text logo when image fails */
-        .text-logo {
-            color: #f61cb1;
-            font-size: 64px;
-            font-weight: bold;
-            margin: 10px 0 30px 0;
-            letter-spacing: 2px;
-            display: none;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status { font-size: 12px; color: rgba(255,255,255,0.25); }
+        .hint { font-size: 11px; color: rgba(255,255,255,0.15); margin-top: 6px; }
+        .icon { width: 32px; height: 32px; margin: 0 auto 20px; opacity: 0.5; }
+        .icon svg { width: 100%; height: 100%; }
+        .message { font-size: 13px; color: rgba(255,255,255,0.5); }
+        .detail { font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 8px; }
+        .sub { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 16px; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .sub:hover { color: rgba(255,255,255,0.4); }
+        .manual-link { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 16px; text-decoration: none; display: none; }
+        .manual-link:hover { color: rgba(255,255,255,0.4); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo image with fallback -->
-        <img src="ConformStudio2Line.svg" alt="Conform Studio" class="logo" 
-             onerror="this.style.display='none'; document.querySelector('.text-logo').style.display='block';">
-        <!-- Text fallback (hidden by default) -->
-        <div class="text-logo">CONFORM STUDIO</div>
-        
-        <!-- Loading state -->
+        <img src="https://cdn.builder.io/api/v1/image/assets%2F25af603265884417b23b761757dff1ec%2F2c25ef9dc2684d0187030022dab8721e?format=webp&width=800" alt="Conform Studio" class="logo" />
+
         <div id="loading-state">
             <div class="spinner"></div>
-            <h2 style="color: #f61cb1; font-size: 24px; font-weight: 600; margin: 20px 0;">Completing Authentication...</h2>
-            <p>Please wait while we process your authentication.</p>
+            <p class="status">Completing authentication...</p>
         </div>
-        
-        <!-- Success state -->
+
         <div id="success-state" class="hidden">
-            <h1>Authentication Successful</h1>
-            <p id="success-message">You have successfully signed in to Conform Studio.</p>
-            <p style="margin-top: 20px;">You can now close this window and return to the application.</p>
-            <p class="small-text" style="margin-top: 32px;">The application will detect your authentication automatically.</p>
-            <a id="manual-return" href="#" class="button hidden" style="margin-top: 30px;">Open Conform Studio</a>
+            <p class="status">Sign in successful</p>
+            <p class="hint">You can close this tab</p>
+            <a id="manual-return" href="#" class="manual-link">Open Conform Studio</a>
         </div>
-        
-        <!-- Error state -->
+
         <div id="error-state" class="hidden">
-            <div class="error">
-                <h2>Authentication Failed</h2>
-                <p id="error-message">An error occurred during authentication.</p>
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
             </div>
-            <button onclick="window.close()" class="button">Close Window</button>
+            <p class="message">Authentication failed</p>
+            <p class="detail" id="error-message">An error occurred during authentication.</p>
+            <button onclick="window.close()" class="sub">Close this tab</button>
         </div>
-        
-        <!-- Invalid request state -->
+
         <div id="invalid-state" class="hidden">
-            <h2 style="color: #ffffff; font-size: 24px; font-weight: 500; margin-bottom: 16px;">Invalid Request</h2>
-            <p>No authentication data was received.</p>
-            <p>Please try signing in again from Conform Studio.</p>
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </div>
+            <p class="message">Invalid request</p>
+            <p class="detail">No authentication data was received. Please try signing in again from Conform Studio.</p>
+            <button onclick="window.close()" class="sub">Close this tab</button>
         </div>
     </div>
 
     <script>
-        // Configuration
         const DEEP_LINK_SCHEME = 'conformstudio://';
         const REDIRECT_DELAY = 1500;
-        const FALLBACK_DELAY = 3000;
-        
-        // Parse hash parameters (for Supabase email verification)
-        function getHashParams() {
-            const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            return params;
-        }
-        
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const hashParams = getHashParams();
-        
-        // Check for OAuth code (standard OAuth flow)
-        const code = urlParams.get('code');
-        const error = urlParams.get('error');
-        const errorDescription = urlParams.get('error_description');
-        
-        // Check for Supabase access token (email verification flow)
-        const accessToken = hashParams.get('access_token');
-        const tokenType = hashParams.get('token_type');
-        const type = hashParams.get('type'); // 'signup' for email verification
-        
-        // Elements
+
         const loadingState = document.getElementById('loading-state');
         const successState = document.getElementById('success-state');
         const errorState = document.getElementById('error-state');
@@ -224,59 +81,57 @@
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');
         const manualReturnButton = document.getElementById('manual-return');
-        
-        // Hide all states
+
         function hideAllStates() {
             loadingState.classList.add('hidden');
             successState.classList.add('hidden');
             errorState.classList.add('hidden');
             invalidState.classList.add('hidden');
         }
-        
-        // Handle successful authentication
-        function handleSuccess(message = null) {
-            // Customize message based on type
-            if (type === 'signup') {
-                successMessage.textContent = 'Your email has been verified successfully!';
-            } else if (message) {
-                successMessage.textContent = message;
-            }
-            
-            // Create deep link
+
+        function getHashParams() {
+            const hash = window.location.hash.substring(1);
+            return new URLSearchParams(hash);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const hashParams = getHashParams();
+
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
+        const accessToken = hashParams.get('access_token');
+        const tokenType = hashParams.get('token_type');
+        const type = hashParams.get('type');
+
+        function handleSuccess(message) {
             let deepLink = DEEP_LINK_SCHEME;
             if (code) {
                 deepLink += `auth-callback?code=${encodeURIComponent(code)}`;
             } else if (accessToken) {
                 deepLink += `auth-verified`;
             }
-            
-            // Set up manual return button
+
             manualReturnButton.href = deepLink;
-            
-            // Show success state after a brief delay
+
             setTimeout(() => {
                 hideAllStates();
                 successState.classList.remove('hidden');
             }, REDIRECT_DELAY);
-            
-            // Try to open the desktop app
+
             setTimeout(() => {
-                console.log('Attempting to open deep link...');
                 window.location.href = deepLink;
             }, REDIRECT_DELAY + 500);
-            
-            // Show manual button if auto-redirect might have failed
+
             setTimeout(() => {
-                console.log('Showing manual button as fallback');
                 manualReturnButton.style.display = 'inline-block';
-            }, FALLBACK_DELAY);
+            }, 3000);
         }
-        
-        // Handle authentication error
+
         function handleError(err, description) {
             hideAllStates();
             errorState.classList.remove('hidden');
-            
+
             if (description) {
                 errorMessage.textContent = description;
             } else if (err === 'access_denied') {
@@ -285,36 +140,33 @@
                 errorMessage.textContent = `Error: ${err}`;
             }
         }
-        
-        // Handle invalid request
+
         function handleInvalid() {
             hideAllStates();
             invalidState.classList.remove('hidden');
         }
-        
-        // Process the authentication result
+
         if (error) {
-            // OAuth error
             handleError(error, errorDescription);
         } else if (code) {
-            // OAuth success
             handleSuccess('OAuth authentication successful!');
         } else if (accessToken && tokenType) {
-            // Supabase email verification success
             handleSuccess();
         } else {
-            // No authentication data
             handleInvalid();
         }
-        
-        // Handle visibility change (user switching tabs)
+
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && (code || accessToken) && successState.classList.contains('hidden')) {
-                // User came back to the tab, show success state
                 hideAllStates();
                 successState.classList.remove('hidden');
             }
         });
+
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
     </script>
 </body>
 </html>
