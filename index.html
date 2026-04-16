@@ -25,6 +25,8 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .status { font-size: 12px; color: rgba(255,255,255,0.25); }
         .hint { font-size: 11px; color: rgba(255,255,255,0.15); margin-top: 6px; }
+        .icon { width: 32px; height: 32px; margin: 0 auto 20px; opacity: 0.5; }
+        .icon svg { width: 100%; height: 100%; }
         .message { font-size: 13px; color: rgba(255,255,255,0.5); }
         .detail { font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 8px; }
         .sub { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 16px; cursor: pointer; background: none; border: none; font-family: inherit; }
@@ -44,18 +46,24 @@
         </div>
 
         <div id="success-state" class="hidden">
-            <p class="status">Sign in successful</p>
-            <p class="hint">You can close this tab</p>
+            <p class="status" id="success-message">Sign in successful</p>
+            <p class="hint" id="success-hint">You can close this tab</p>
             <a id="manual-return" href="#" class="manual-link">Open Conform Studio</a>
         </div>
 
         <div id="error-state" class="hidden">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </div>
             <p class="message">Authentication failed</p>
             <p class="detail" id="error-message">An error occurred during authentication.</p>
             <button onclick="window.close()" class="sub">Close this tab</button>
         </div>
 
         <div id="invalid-state" class="hidden">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </div>
             <p class="message">Invalid request</p>
             <p class="detail">No authentication data was received. Please try signing in again from Conform Studio.</p>
             <button onclick="window.close()" class="sub">Close this tab</button>
@@ -100,6 +108,8 @@
             let deepLink = DEEP_LINK_SCHEME;
             if (code) {
                 deepLink += `auth-callback?code=${encodeURIComponent(code)}`;
+            } else if (accessToken && type === 'recovery') {
+                deepLink += `auth-recovery?access_token=${encodeURIComponent(accessToken)}`;
             } else if (accessToken) {
                 deepLink += `auth-verified`;
             }
@@ -109,15 +119,30 @@
             setTimeout(() => {
                 hideAllStates();
                 successState.classList.remove('hidden');
+                if (type === 'recovery') {
+                    document.getElementById('success-message').textContent = 'Password reset verified';
+                    document.getElementById('success-hint').textContent = 'Set your new password in the app';
+                }
+                // Show the manual button immediately so Safari users can click it
+                manualReturnButton.style.display = 'inline-block';
             }, REDIRECT_DELAY);
 
+            // Use a hidden iframe to attempt the deep link redirect.
+            // This works more reliably across browsers (especially Safari)
+            // than window.location.href inside a setTimeout.
             setTimeout(() => {
-                window.location.href = deepLink;
-            }, REDIRECT_DELAY + 500);
-
-            setTimeout(() => {
-                manualReturnButton.style.display = 'inline-block';
-            }, 3000);
+                try {
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = deepLink;
+                    document.body.appendChild(iframe);
+                    setTimeout(function() {
+                        window.location.href = deepLink;
+                    }, 500);
+                } catch (e) {
+                    // If iframe fails, the manual button is already visible
+                }
+            }, REDIRECT_DELAY + 200);
         }
 
         function handleError(err, description) {
